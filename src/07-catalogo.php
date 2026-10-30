@@ -1,39 +1,7 @@
 <?php
-// Catálogo de canciones en arrays asociativos
-$songs = [
-    [
-        'id' => 1,
-        'title' => 'Sesión de prueba',
-        'artist' => 'Grupo del aula',
-        'category' => 'electronica',
-        'duration' => 185,
-        'src' => 'audio/demo-01.mp3',
-    ],
-    [
-        'id' => 2,
-        'title' => 'Riff Callejero',
-        'artist' => 'Banda Local',
-        'category' => 'rock',
-        'duration' => 210,
-        'src' => 'audio/demo-02.mp3',
-    ],
-    [
-        'id' => 3,
-        'title' => 'Sinfonía del Barrio',
-        'artist' => 'Orquesta Juvenil',
-        'category' => 'bandas-sonoras',
-        'duration' => 320,
-        'src' => 'audio/demo-03.mp3',
-    ],
-    [
-        'id' => 4,
-        'title' => 'Ritmo Nocturno',
-        'artist' => 'DJ Residente',
-        'category' => 'electronica',
-        'duration' => 145,
-        'src' => 'audio/demo-04.mp3',
-    ],
-];
+// Cargamos la biblioteca de funciones y los datos externos
+require_once __DIR__ . '/lib/canciones.php';
+$songs = require __DIR__ . '/lib/catalogo-inicial.php';
 ?>
 <!DOCTYPE html>
 <html lang="es">
