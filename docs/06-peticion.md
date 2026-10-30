@@ -19,3 +19,20 @@ Recepción de parámetros por la URL mediante la superglobal `$_GET` para el fil
 | **Categoría admitida** | `/09-filtro.php?category=rock` | `200 OK` | `200 OK` | Filtra y muestra únicamente canciones con categoría rock. |
 | **Categoría desconocida** | `/09-filtro.php?category=desconocida` | `400 Bad Request` | `400 Bad Request` | Retorna mensaje *"Categoría no válida"* sin generar HTML. |
 | **Inyección de array** | `/09-filtro.php?category[]=rock` | `400 Bad Request` | `400 Bad Request` | `is_string()` rechaza el array, retornando estado 400 sin warnings ni fallos de ejecución. |
+## 5. Formulario de canción por POST (Pasos 3 y 4)
+
+### Implementación realizada
+- Archivo `src/10-formulario.php`: Recepción de datos vía `$_POST` con validación individual y vista previa sin alteración del catálogo en disco.
+- Validación con `FILTER_VALIDATE_INT` para evitar conversiones implícitas erróneas y comprobación de rango (1 a 1800 segundos).
+- Persistencia de campos en el formulario tras errores para mejorar la experiencia de usuario, escapando siempre los valores con `htmlspecialchars`.
+- Selección cerrada de rutas de audio (`allowed_audios`) para impedir rutas arbitrarias.
+
+### Casos de prueba del formulario
+| Campo probado | Valor introducido | Resultado esperado | Resultado observado |
+| :--- | :--- | :--- | :--- |
+| **Título** | Solo espacios (`   `) | Rechazo por `trim()` | Error: *"El título es obligatorio"* |
+| **Título con HTML**| `<b>Demo</b>` | Escape visual seguro | Muestra `<b>Demo</b>` en texto plano |
+| **Duración** | `abc` | Rechazo por `FILTER_VALIDATE_INT` | Error: *"Debe ser un número entero válido"* |
+| **Duración límite inferior** | `0` | Fuera de rango (< 1) | Error: *"Entre 1 y 1800 segundos"* |
+| **Duración límite superior** | `1801` | Fuera de rango (> 1800) | Error: *"Entre 1 y 1800 segundos"* |
+| **Ficha válida** | Datos correctos | HTTP 200 y recuadro verde | Muestra *"Vista previa, canción no guardada"* |
