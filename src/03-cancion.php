@@ -22,7 +22,7 @@ $title_escapado = htmlspecialchars($title, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
     <h1>Canción destacada: <?php echo $title_escapado; ?></h1>
 
     <p>
-        Estás escuchando la canción titulada <strong><?php echo $title_escapado; ?></strong>,
+        Estás escuchando la canción titulada <?php echo $title_escapado; ?>,
         interpretada por <?php echo htmlspecialchars($artist, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>.
     </p>
 
