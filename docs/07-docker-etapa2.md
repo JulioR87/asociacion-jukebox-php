@@ -23,3 +23,21 @@ Evolución de la arquitectura del entorno Docker a una segunda etapa (puerto 809
 ### Prueba 3: Verificación de módulos PHP
 - **Comando:** `docker compose exec web php -m`
 - **Resultado observado:** Módulos `pdo_mysql` y `pdo_pgsql` cargados con éxito en el motor PHP.
+## 4. Ampliación multiservicio: PostgreSQL y MariaDB
+
+### Configuración de servicios
+- Se orquestaron tres contenedores bajo el proyecto `asociacion-jukebox-multiservicio`:
+  - `web`: Servidor Apache + PHP con extensiones PDO.
+  - `postgres` (imagen `postgres:17-bookworm`): Base de datos `jukebox_pg`.
+  - `mariadb` (imagen `mariadb:11.4`): Base de datos `jukebox_maria`.
+- Se configuraron directivas `healthcheck` con `depends_on: condition: service_healthy` para garantizar que la web solo reciba tráfico una vez que los motores estén plenamente inicializados.
+- Se mantuvo el aislamiento de red sin mapear los puertos 5432 ni 3306 al host de Windows.
+
+### Diferencia entre tipos de almacenamiento
+- **Bind Mounts (`./src` y `./data`):** Enlaces directos a carpetas del sistema anfitrión (Windows) que permiten editar código en vivo y persistir datos en formato JSON fuera de la raíz web de Apache.
+- **Volúmenes con nombre de Docker (`pgdata` y `mariadata`):** Áreas de almacenamiento gestionadas directamente por el motor de Docker optimizadas para bases de datos relacionales, conservando los datos de los motores incluso si se eliminan los contenedores.
+*(Nota: No se debe ejecutar `docker compose down -v` para evitar borrar estos volúmenes).*
+
+### Prueba de conexiones PDO (`11-conexiones.php`)
+- **Respuesta obtenida:** Estado HTTP `200 OK` con JSON confirmando conexión activa y bases de datos (`jukebox_pg` y `jukebox_maria`).
+- **Seguridad:** En caso de fallo se devuelve un código de estado `503 Service Unavailable`, enviando el detalle del error al registro de errores de Apache (`error_log`) sin exponer credenciales en la respuesta pública.

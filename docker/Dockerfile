@@ -7,5 +7,5 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Copiar el VirtualHost de Apache y activarlo
-COPY apache/jukebox.conf /etc/apache2/sites-available/jukebox.conf
+COPY docker/apache/jukebox.conf /etc/apache2/sites-available/jukebox.conf
 RUN a2ensite jukebox.conf && a2dissite 000-default.conf
