@@ -1,0 +1,11 @@
+name: asociacion-jukebox-etapa2
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:8091:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./data:/var/www/data
