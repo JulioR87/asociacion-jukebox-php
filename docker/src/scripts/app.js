@@ -1,6 +1,6 @@
 // docker/src/scripts/app.js
-// FUNCION PARA EL RELOJ DIGITAL
 document.addEventListener('DOMContentLoaded', () => {
+  // RELOJ DIGITAL
   const digitalClok = document.getElementById('digital-clock');
 
   function actualizarReloj() {
@@ -14,28 +14,28 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(actualizarReloj, 1000);
 
   //================================================================================
-  // BLOQUE PARA PINTAR Y GUARDAR LA MUSICA DE LA API
+  // VARIABLES DE ESTADO Y ELEMENTOS DOM
   let canciones = [];
   let indiceActual = 0;
   let reproduccionActual = null;
 
-  // Botones de control
+  // Botones
   const btnPlay = document.getElementById('btn-play');
   const btnIcon = document.getElementById('play-icon');
   const btnStop = document.getElementById('btn-stop');
   const btnPrev = document.getElementById('btn-prev');
   const btnNext = document.getElementById('btn-next');
 
-  // Barra de progreso y tiempos
+  // Progreso y tiempos
   const currentTimeText = document.getElementById('current-time');
   const totalDurationText = document.getElementById('total-duration');
   const progressContainer = document.getElementById('progress-container');
   const progressFill = document.getElementById('progress-fill');
 
-  // Metadatos inferiores
-  const currentCover = document.getElementById('current-cover');
+  // Metadatos
   const currentTitle = document.getElementById('current-title');
   const currentArtist = document.getElementById('current-artist');
+  const currentCover = document.getElementById('current-cover');
 
   // Vinilo
   const vinylDisc = document.getElementById('vinyl-disc');
@@ -76,23 +76,53 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   //================================================================================
-  // FUNCION PARA PINTAR LAS TARJETAS EN EL HTML
+  // PINTAR LISTA CON textContent Y CONTROL DE ESTADO VACÍO (Paso 3)
   function mostrarPlaylist() {
     const contenedor = document.getElementById('playlist-container');
     if (!contenedor) return;
 
     contenedor.innerHTML = '';
+
+    // Si la colección está vacía, desactivar reproducción y explicar motivo
+    if (!Array.isArray(canciones) || canciones.length === 0) {
+      const msgVacio = document.createElement('p');
+      msgVacio.style.color = '#888';
+      msgVacio.textContent = 'No hay canciones en el catálogo. Añade una desde el administrador.';
+      contenedor.appendChild(msgVacio);
+
+      if (btnPlay) btnPlay.disabled = true;
+      if (currentTitle) currentTitle.textContent = 'Sin pistas disponibles';
+      if (currentArtist) currentArtist.textContent = '-';
+      return;
+    }
+
+    if (btnPlay) btnPlay.disabled = false;
+
     canciones.forEach((cancion, index) => {
       const tarjeta = document.createElement('div');
       tarjeta.className = 'track-card';
 
-      tarjeta.innerHTML = `
-        <img class="card-thumb" src="${cancion.caratula}" alt="${cancion.titulo}">
-        <div class="card-text">
-          <div class="card-title">${cancion.titulo}</div>
-          <div class="card-sub">${cancion.artista} - ${cancion.genero}</div>
-        </div>
-      `;
+      const thumb = document.createElement('img');
+      thumb.className = 'card-thumb';
+      thumb.src = cancion.caratula || 'img/default.jpg';
+      thumb.alt = cancion.titulo;
+
+      const cardText = document.createElement('div');
+      cardText.className = 'card-text';
+
+      // Uso estricto de textContent para textos recibidos
+      const titleEl = document.createElement('div');
+      titleEl.className = 'card-title';
+      titleEl.textContent = cancion.titulo;
+
+      const subEl = document.createElement('div');
+      subEl.className = 'card-sub';
+      subEl.textContent = `${cancion.artista} - ${cancion.genero}`;
+
+      cardText.appendChild(titleEl);
+      cardText.appendChild(subEl);
+      tarjeta.appendChild(thumb);
+      tarjeta.appendChild(cardText);
 
       tarjeta.addEventListener('click', () => {
         reproducirCancion(index);
@@ -103,17 +133,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   //================================================================================
-  // OBTENER LOS DATOS DESDE LA API PHP
+  // CARGAR CANCIONES DESDE LA API PRIVADA (Paso 3)
   async function cargarCanciones() {
     try {
-      const respuesta = await fetch('api/canciones.php');
-      if (!respuesta.ok) {
-        throw new Error(`Error al leer la API: ${respuesta.status}`);
+      // Petición a ./api/canciones.php desde la misma web y puerto
+      const response = await fetch('./api/canciones.php');
+      if (!response.ok) {
+        throw new Error(`Error en respuesta API: ${response.status}`);
       }
-      const datosServidor = await respuesta.json();
 
-      // Mapeamos las claves del backend a las variables de tu reproductor
-      canciones = datosServidor.map(item => ({
+      const songs = await response.json();
+
+      // Validación de lista válida
+      if (!Array.isArray(songs)) {
+        throw new Error('La respuesta recibida no es una lista válida.');
+      }
+
+      // Adaptación de propiedades: title, artist, category, src -> variables internas
+      canciones = songs.map(item => ({
         id: item.id,
         titulo: item.title || 'Sin título',
         artista: item.artist || 'Artista desconocido',
@@ -122,10 +159,22 @@ document.addEventListener('DOMContentLoaded', () => {
         caratula: item.cover || 'img/default.jpg'
       }));
 
-      console.log('Canciones recibidas de la API:', canciones);
       mostrarPlaylist();
+
+      // Inicializar índice en 0 si hay datos
+      if (canciones.length > 0) {
+        indiceActual = 0;
+      }
     } catch (error) {
-      console.error('Ocurrió un error al cargar las canciones:', error);
+      console.error('Error controlado al cargar catálogo:', error);
+      const contenedor = document.getElementById('playlist-container');
+      if (contenedor) {
+        contenedor.innerHTML = '';
+        const msgError = document.createElement('p');
+        msgError.style.color = '#c00';
+        msgError.textContent = 'Error al cargar las canciones desde el servidor.';
+        contenedor.appendChild(msgError);
+      }
     }
   }
 
@@ -157,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   //================================================================================
-  // VISUALIZADOR DE AUDIO
+  // ANALIZADOR Y CANVAS
   function inicializarAnalizador() {
     if (analizador || typeof Howler === 'undefined') return;
 
@@ -202,8 +251,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   //================================================================================
-  // REPRODUCCIÓN
+  // REPRODUCCIÓN (No crear Howl si la lista está vacía)
   function reproducirCancion(indice) {
+    if (canciones.length === 0) return;
+
     if (reproduccionActual) {
       reproduccionActual.stop();
       reproduccionActual.unload();
@@ -235,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     resaltarTarjetaActiva(indiceActual);
 
+    // Creación de Howl con comprobación de src
     reproduccionActual = new Howl({
       src: [cancion.archivo],
       html5: false,
@@ -298,6 +350,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function alternarPlayPause() {
+    if (canciones.length === 0) return;
+
     if (!reproduccionActual) {
       reproducirCancion(indiceActual);
       return;
@@ -400,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Asignar listeners
+  // Eventos de botones
   if (btnPlay) btnPlay.addEventListener('click', alternarPlayPause);
   if (btnStop) btnStop.addEventListener('click', detenerCancion);
   if (btnNext) btnNext.addEventListener('click', siguienteCancion);

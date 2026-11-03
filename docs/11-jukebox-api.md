@@ -21,3 +21,9 @@ Integración del reproductor web y ecualizador sobre Canvas en `home.php`. Creac
 | :--- | :--- | :---: | :---: | :--- |
 | `GET /api/canciones.php` | Sin sesión (anónimo) | `401 Unauthorized` | `application/json` | Objeto JSON con mensaje de error controlado. |
 | `GET /api/canciones.php` | Con sesión activa | `200 OK` | `application/json` | Lista JSON plana `[...]` con las canciones. | 
+
+## 5. Recorrido del flujo de datos
+1. **PHP y Almacenamiento:** El usuario inicia sesión y accede a `home.php`. Cuando el navegador solicita datos, el endpoint `api/canciones.php` valida la cookie de sesión (`usuario_id`), accede al archivo privado `data/canciones.json` mediante cerrojos compartidos (`LOCK_SH`) y responde con código HTTP 200 y una lista JSON plana.
+2. **JavaScript Cliente:** `app.js` consume `./api/canciones.php` mediante `fetch()`, valida la estructura del array y renderiza las tarjetas de forma segura usando `textContent` para prevenir ataques de inyección HTML.
+3. **Reproducción con Howler:** Al interactuar con una tarjeta, Howler instancia el audio solicitando el recurso estático bajo `audio/`, mientras Web Audio API analiza las frecuencias sonoras y las dibuja sobre el elemento `<canvas>`.
+4. **Control de acceso:** Tanto la vista `home.php` como la API privada `api/canciones.php` exigen sesión autenticada. En este prototipo, los archivos estáticos de la carpeta pública `audio/` son servidos directamente por el servidor web sin comprobación de sesión.
