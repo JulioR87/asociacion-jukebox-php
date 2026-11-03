@@ -36,6 +36,14 @@ try {
         <p style="color: green; font-weight: bold;">Canción añadida correctamente al catálogo.</p>
     <?php endif; ?>
 
+    <?php if (isset($_GET['editada'])): ?>
+        <p style="color: blue; font-weight: bold;">Canción actualizada correctamente.</p>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['eliminada'])): ?>
+        <p style="color: darkorange; font-weight: bold;">Canción eliminada del catálogo.</p>
+    <?php endif; ?>
+
     <?php if ($error_mensaje !== null): ?>
         <p style="color: red; font-weight: bold;"><?php echo $error_mensaje; ?></p>
     <?php elseif (empty($songs)): ?>
@@ -55,7 +63,8 @@ try {
                     
                     <div style="margin-top: 10px;">
                         <!-- Enlace provisional para editar -->
-                        <a href="cancion-editar.php?id=<?php echo (int) $song['id']; ?>">Editar</a>
+                        <a href="cancion-editar.php?id=<?php echo (int) $song['id']; ?>">Editar</a> | 
+                        <a href="cancion-eliminar.php?id=<?php echo (int) $song['id']; ?>" style="color: red;">Eliminar</a>
                         
                         <!-- Formulario de borrado por POST con token (desactivado provisionalmente) -->
                         <form method="post" action="cancion-eliminar.php" style="display:inline; margin-left: 10px;">

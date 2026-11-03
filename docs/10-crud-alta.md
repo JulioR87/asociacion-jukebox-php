@@ -22,3 +22,23 @@ Se descartó el uso de `count($songs) + 1` porque si en el futuro se eliminan re
 | **Recarga tras alta** | `F5` sobre `canciones.php?creada=1` | `200 OK` | Petición GET limpia; no duplica el registro en `canciones.json`. |
 | **Rechazo por validación** | Duración 2500 s | `400 Bad Request` | Muestra error en formulario; el JSON permanece inalterado. |
 | **Rechazo por CSRF** | Token ausente o modificado | `403 Forbidden` | Deniega el guardado; no altera la colección. |
+
+## 5. Edición y Eliminación por Identificador (Pasos 3 y 4)
+
+### Implementación realizada
+- `cancion-editar.php`: Validación estricta de ID por GET, carga de valores actuales y modificación atómica de campos conservando el ID inalterado.
+- `cancion-eliminar.php`: Confirmación visual previa por GET y ejecución del borrado exclusivamente por POST bajo token CSRF.
+- Uso de `array_values()` tras `unset()`: Evita huecos en los índices del array que provocarían que `json_encode()` serializara un objeto asociativo `{}` en lugar de una lista indexada `[]`.
+- Conservación de activos estáticos: La operación de borrado solo afecta a los metadatos en el JSON, sin invocar `unlink()` sobre los ficheros de audio en `src/audio/`.
+
+### Explicación técnica: ¿Por qué ID y posición no son lo mismo?
+- **Posición (Índice del array):** Representa el índice numérico secuencial en memoria (0, 1, 2...) que ocupa un elemento en ese momento exacto. Si se elimina el elemento en el índice 1, el elemento que estaba en el índice 2 pasa a ocupar el índice 1.
+- **ID (Identificador único):** Clave primaria estable del registro que no varía a lo largo de su ciclo de vida, independientemente de que se reordenen, borren o filtren otros elementos. Buscar por posición (`$songs[$id]`) causaría la edición o eliminación de una canción equivocada.
+
+### Evolución de IDs tras las pruebas
+| Acción realizada | Canción afectada | ID | Posición en array tras la acción | Estado en `canciones.json` |
+| :--- | :--- | :---: | :---: | :--- |
+| **Estado inicial** | Pistas 1, 2, 3, 4 | 1, 2, 3, 4 | Índices 0 a 3 | Lista continua |
+| **Borrado** | Riff Callejero | 2 | Eliminado | Reindexado con `array_values` (pistas 1, 3, 4) |
+| **Edición** | Sinfonía del Barrio | 3 | Conserva índice | Título modificado a "Remix" |
+| **Nueva alta** | Pista posterior | Siguiente $maxId + 1 | Último índice | ID asignado monótonamente sin colisión |
