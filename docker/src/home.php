@@ -19,7 +19,7 @@ $aliasUsuario = $_SESSION['alias'] ?? 'Usuario';
 
     <nav>
         <ul>
-            <li><a href="12-catalogo-json.php">Explorar Catálogo Musical</a></li>
+            <li><a href="canciones.php">Gestionar Catálogo Musical</a></li>
         </ul>
     </nav>
 

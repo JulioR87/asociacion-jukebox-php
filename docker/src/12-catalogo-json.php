@@ -2,6 +2,7 @@
 // docker/src/12-catalogo-json.php
 require_once __DIR__ . '/lib/canciones.php';
 require_once __DIR__ . '/lib/almacen-json.php';
+require_once __DIR__ . '/lib/acceso.php';
 
 $songs = [];
 $error_mensaje = null;

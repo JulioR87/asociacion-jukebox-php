@@ -44,3 +44,34 @@ Configuración del ciclo de vida de sesiones en PHP y protección de solicitudes
   3. Rebobinado con `rewind()`, escritura completa con `fwrite()`, recorte con `ftruncate()` y confirmación en disco con `fflush()`.
   4. Liberación del bloqueo con `flock(LOCK_UN)` y cierre del descriptor en bloque `finally`.
 - **Lectura concurrente segura:** La función de lectura usa `flock(LOCK_SH)` (bloqueo compartido) para que varias consultas lean al mismo tiempo sin riesgo de capturar una escritura a medio procesar.
+## 7. Flujo de autenticación y control de acceso (Pasos 5 y 6)
+
+### Esquema del ciclo de vida de usuario y sesión
+1. **Registro (`register.php`):**
+   - El usuario envía datos vía POST protegido por CSRF.
+   - Si los datos son válidos, se genera el hash unidireccional con `password_hash()`.
+   - **Momento en que se guarda el usuario:** Se almacena en disco dentro de `/var/www/data/usuarios.json` bajo cerrojo `LOCK_EX`.
+   - Redirige a `login.php` con cabecera `303`. *(Aún no hay sesión de usuario iniciada)*.
+
+2. **Identificación (`login.php`):**
+   - El usuario introduce credenciales por POST protegido por CSRF.
+   - Se localiza el correo y se valida la contraseña usando `password_verify()`.
+   - Ante fallos, se responde con HTTP 401 y el mensaje opaco *"Credenciales no válidas"*.
+   - **Momento en que se abre la sesión de usuario:** Tras verificar la clave, se regenera el ID con `session_regenerate_id(true)` y se asignan `$_SESSION['usuario_id']` y `$_SESSION['alias']`.
+
+3. **Acceso Privado (`home.php` y `lib/acceso.php`):**
+   - En cada petición, el servidor ejecuta `acceso.php` antes de generar HTML.
+   - Si falta `$_SESSION['usuario_id']`, se emite una redirección 303 hacia `login.php` y se termina con `exit`. La protección reside en el servidor y no en la interfaz del cliente.
+
+4. **Cierre de sesión (`logout.php`):**
+   - Exclusivamente mediante petición POST con token CSRF.
+   - Se vacía `$_SESSION`, se invalida la cookie `JUKEBOXSESSID` en el navegador y se ejecuta `session_destroy()`.
+
+### Tabla de pruebas de acceso
+| Prueba | Acción realizada | Código HTTP esperado | Código HTTP observado |
+| :--- | :--- | :---: | :---: |
+| **Acceso directo anónimo** | Petición GET a `/home.php` sin cookie | `303 See Other` hacia `/login.php` | Redirección inmediata a login |
+| **Login incorrecto** | Contraseña o correo erróneo | `401 Unauthorized` | Mensaje: *"Credenciales no válidas"* |
+| **Login correcto** | Credenciales registradas válidas | `303 See Other` hacia `/home.php` | Carga de bienvenida con alias del usuario |
+| **Logout GET no permitido**| Navegación directa a `/logout.php` | `405 Method Not Allowed` | Petición rechazada |
+| **Logout POST legítimo** | Pulsar botón Cerrar sesión | `303 See Other` hacia `/login.php` | Sesión eliminada; retorno a login |
