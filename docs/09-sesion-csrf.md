@@ -18,3 +18,19 @@ Configuración del ciclo de vida de sesiones en PHP y protección de solicitudes
 | :--- | :--- | :---: | :---: | :--- |
 | **Envío legítimo** | Formulario enviado con el token hidden presente | `200 OK` | `200 OK` | Petición aceptada; muestra datos recibidos. |
 | **Ataque CSRF simulado** | Eliminación del `<input type="hidden" name="csrf">` mediante el inspector del navegador antes del envío | `403 Forbidden` | `403 Forbidden` | Solicitud rechazada de inmediato; ejecución interrumpida sin alterar datos. |
+
+## 5. Registro de cuentas de prueba (Pasos 3 y 4)
+
+### Implementación realizada
+- Archivo `src/register.php`: Recepción segura por POST, validación de alias (2-30 caracteres con `mb_strlen`), normalización y validación de correo (`strtolower` y `FILTER_VALIDATE_EMAIL`), y control de contraseña (12-64 caracteres y descarte ante > 72 bytes con `strlen` para cumplir con bcrypt).
+- Almacenamiento protegido: Generación de identificador incremental y cifrado unidireccional de credenciales mediante `password_hash($password, PASSWORD_DEFAULT)`.
+- Prevención de reenvío de formulario (Patrón Post/Redirect/Get): Redirección con código HTTP `303 See Other` hacia `login.php`.
+
+### Casos de prueba documentados
+| Caso probado | Entradas proporcionadas | Resultado esperado | Resultado observado |
+| :--- | :--- | :--- | :--- |
+| **Alta válida** | Alias correcto, correo nuevo y clave >= 12 chars | HTTP 303 hacia `login.php` y guardado | Redirección exitosa; usuario creado en `usuarios.json` con hash seguro. |
+| **Correo con mayúsculas** | `USUARIO@PRUEBA.LOCAL` existente | Detección de duplicado por normalización | Rechazo con mensaje: *"Este correo electrónico ya está registrado"*. |
+| **Claves no coincidentes** | Passwords distintas | Rechazo sin persistir passwords | Mensaje: *"Las contraseñas no coinciden"*; campos de clave limpios. |
+| **Entrada tipo array** | `alias[]` | Detección por `is_string()` | Rechazo inmediato sin Warnings ni Fatal Errors. |
+| **Acceso directo a datos** | `/data/usuarios.json` | HTTP 404 Not Found | Acceso web denegado por configuración de Apache. |

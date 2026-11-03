@@ -1,1 +1,8 @@
-[{"usuario": "secreto"}]
+[
+    {
+        "id": 1,
+        "alias": "melomano",
+        "email": "usuario@prueba.local",
+        "password_hash": "$2y$12$rqMilW63dDF4Q51vAtbZueKRrm1RSnaBwebW9mTkYIlD2r.rjtwVK"
+    }
+]
