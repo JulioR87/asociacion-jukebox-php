@@ -1,6 +1,7 @@
 <?php
 // docker/src/register.php
 require_once __DIR__ . '/lib/sesion.php';
+require_once __DIR__ . '/lib/almacen-json.php';
 
 $alias = '';
 $email = '';
@@ -50,60 +51,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // 5. Cargar usuarios existentes y comprobar duplicados
-    $rutaUsuarios = '/var/www/data/usuarios.json';
-    $usuarios = [];
-
-    if (file_exists($rutaUsuarios)) {
-        $contenido = @file_get_contents($rutaUsuarios);
-        if ($contenido !== false && trim($contenido) !== '') {
-            $usuarios = json_decode($contenido, true) ?? [];
-        }
-    }
-
-    // Comprobar si el correo ya existe
-    if (empty($errors['email'])) {
-        foreach ($usuarios as $u) {
-            if (isset($u['email']) && strtolower($u['email']) === $email) {
-                $errors['email'] = 'Este correo electrónico ya está registrado.';
-                break;
-            }
-        }
-    }
-
-    // 6. Si no hay errores, guardar el nuevo usuario
+    // 5. Procedimiento común de actualización atómica bajo LOCK_EX
     if (empty($errors)) {
-        // Calcular ID incremental (máximo + 1 o 1)
-        $maxId = 0;
-        foreach ($usuarios as $u) {
-            if (isset($u['id']) && $u['id'] > $maxId) {
-                $maxId = (int)$u['id'];
-            }
-        }
-        $newId = $maxId + 1;
+        $rutaUsuarios = '/var/www/data/usuarios.json';
 
-        // Generar hash seguro de la contraseña
-        $hash = password_hash($password, PASSWORD_DEFAULT);
+        try {
+            actualizarJsonConBloqueo($rutaUsuarios, function (array $usuarios) use ($alias, $email, $password) {
+                // Comprobar duplicados sobre los datos recién leídos dentro del cerrojo
+                foreach ($usuarios as $u) {
+                    if (isset($u['email']) && strtolower($u['email']) === $email) {
+                        throw new DomainException('Este correo electrónico ya está registrado.');
+                    }
+                }
 
-        $nuevoUsuario = [
-            'id' => $newId,
-            'alias' => $alias,
-            'email' => $email,
-            'password_hash' => $hash
-        ];
+                // Calcular ID autoincremental
+                $maxId = 0;
+                foreach ($usuarios as $u) {
+                    if (isset($u['id']) && $u['id'] > $maxId) {
+                        $maxId = (int)$u['id'];
+                    }
+                }
+                $newId = $maxId + 1;
 
-        $usuarios[] = $nuevoUsuario;
+                // Generar hash seguro
+                $hash = password_hash($password, PASSWORD_DEFAULT);
 
-        // Guardar en el archivo JSON
-        $jsonFinal = json_encode($usuarios, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        $guardado = @file_put_contents($rutaUsuarios, $jsonFinal, LOCK_EX);
+                $usuarios[] = [
+                    'id' => $newId,
+                    'alias' => $alias,
+                    'email' => $email,
+                    'password_hash' => $hash
+                ];
 
-        if ($guardado !== false) {
-            // Redirigir a login con estado 303 (See Other)
+                return $usuarios;
+            });
+
+            // Redirigir a login con código 303 si se guardó con éxito
             header('Location: login.php?registrado=1', true, 303);
             exit;
-        } else {
-            $errors['general'] = 'Error al guardar los datos en el servidor.';
+
+        } catch (DomainException $e) {
+            $errors['email'] = $e->getMessage();
+        } catch (Throwable $e) {
+            $errors['general'] = 'Fallo durante el guardado protegido: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         }
     }
 }
@@ -118,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h1>Crear cuenta de prueba</h1>
 
     <?php if (isset($errors['general'])): ?>
-        <p style="color: red; font-weight: bold;"><?php echo htmlspecialchars($errors['general'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></p>
+        <p style="color: red; font-weight: bold;"><?php echo $errors['general']; ?></p>
     <?php endif; ?>
 
     <form method="post" action="register.php">
@@ -142,7 +132,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <p>
             <label for="password">Contraseña (12 a 64 caracteres):</label><br>
-            <!-- Los campos de contraseña siempre van vacíos ante errores -->
             <input type="password" id="password" name="password" value="">
             <?php if (isset($errors['password'])): ?>
                 <span style="color: red;"><?php echo $errors['password']; ?></span>

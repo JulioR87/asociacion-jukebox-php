@@ -34,3 +34,13 @@ Configuración del ciclo de vida de sesiones en PHP y protección de solicitudes
 | **Claves no coincidentes** | Passwords distintas | Rechazo sin persistir passwords | Mensaje: *"Las contraseñas no coinciden"*; campos de clave limpios. |
 | **Entrada tipo array** | `alias[]` | Detección por `is_string()` | Rechazo inmediato sin Warnings ni Fatal Errors. |
 | **Acceso directo a datos** | `/data/usuarios.json` | HTTP 404 Not Found | Acceso web denegado por configuración de Apache. |
+## 6. Procedimiento común de actualización atómica (Bloque 9)
+
+### Razones técnicas del procedimiento
+- **Limitación de `file_put_contents` con `LOCK_EX`:** Proteger solo el momento de la escritura no evita condiciones de carrera (race conditions). Dos peticiones paralelas podrían leer el archivo en el mismo instante, validar la inexistencia del correo simultáneamente y asignarse el mismo ID.
+- **Flujo de 4 pasos implementado en `almacen-json.php`:**
+  1. Apertura con `fopen('r+')` para no vaciar el archivo preventivamente.
+  2. Adquisición de `flock(LOCK_EX)` antes de leer con `stream_get_contents` y parsear el JSON; la validación de duplicados y cálculo de ID ocurren dentro del bloqueo.
+  3. Rebobinado con `rewind()`, escritura completa con `fwrite()`, recorte con `ftruncate()` y confirmación en disco con `fflush()`.
+  4. Liberación del bloqueo con `flock(LOCK_UN)` y cierre del descriptor en bloque `finally`.
+- **Lectura concurrente segura:** La función de lectura usa `flock(LOCK_SH)` (bloqueo compartido) para que varias consultas lean al mismo tiempo sin riesgo de capturar una escritura a medio procesar.
