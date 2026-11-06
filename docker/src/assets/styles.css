@@ -50,9 +50,7 @@ body {
   position: relative;
 }
 
-/* ==========================================================================
-   FONDO ANIMADO SUAVE (Muted Organic Flow)
-   ========================================================================== */
+/* Fondo Animado */
 body::before {
   content: "";
   position: fixed;
@@ -72,19 +70,16 @@ body::before {
   100% { transform: translate(2%, -3%) scale(1); }
 }
 
-/* ==========================================================================
-   VIEWPORT & DISTRIBUCIÓN FLOTANTE
-   ========================================================================== */
+/* Viewport */
 .jukebox-viewport {
   display: flex;
   flex-direction: column;
   width: 100vw;
   height: 100vh;
-  padding: 18px 28px 96px 28px;
-  gap: 16px;
+  padding: 12px 28px 96px 28px;
+  gap: 12px;
 }
 
-/* Tarjetas Flotantes Base */
 .asym-card {
   background: var(--card-bg);
   backdrop-filter: blur(20px);
@@ -95,22 +90,20 @@ body::before {
   transition: var(--ease-smooth);
 }
 
-/* ==========================================================================
-   BARRA SUPERIOR (MINIMAL MUTE GOLD)
-   ========================================================================== */
+/* Barra superior */
 .top-status-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 40px;
-  padding: 0 6px;
+  height: 42px;
+  padding: 0 10px;
 }
 
 .system-badge {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 0.68rem;
+  gap: 12px;
+  font-size: 0.72rem;
   letter-spacing: 2px;
   color: var(--gold-primary);
   font-weight: 600;
@@ -125,35 +118,24 @@ body::before {
   opacity: 0.8;
 }
 
+.php-user-badge {
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+}
+
+.php-user-badge strong {
+  color: var(--gold-light);
+}
+
 .status-icons-cluster {
   display: flex;
   align-items: center;
-  gap: 10px;
-}
-
-.icon-circle {
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  border: 1px solid var(--gold-border);
-  background: rgba(18, 20, 26, 0.6);
-  color: var(--gold-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: var(--ease-smooth);
-}
-
-.icon-circle:hover {
-  color: var(--gold-light);
-  border-color: var(--gold-primary);
-  background: var(--bg-matte-elevated);
+  gap: 12px;
 }
 
 .clock-pill {
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 8px;
   background: rgba(14, 16, 20, 0.8);
   border: 1px solid var(--gold-border);
@@ -163,14 +145,42 @@ body::before {
   letter-spacing: 1.5px;
 }
 
-.power-btn {
-  border-color: rgba(197, 160, 89, 0.3);
+.btn-php-nav {
   color: var(--gold-primary);
+  border: 1px solid var(--gold-border);
+  background: rgba(18, 20, 26, 0.6);
+  padding: 5px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: var(--ease-smooth);
 }
 
-/* ==========================================================================
-   GRILLA PRINCIPAL ASIMÉTRICA SUSPENDIDA
-   ========================================================================== */
+.btn-php-nav:hover {
+  background: var(--gold-subtle);
+  color: var(--gold-light);
+}
+
+.btn-php-logout {
+  background: #7a1515;
+  color: #fff;
+  border: 1px solid #9e2020;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: var(--ease-smooth);
+}
+
+.btn-php-logout:hover {
+  background: #a82020;
+}
+
+/* Grilla Principal */
 .console-grid {
   display: grid;
   grid-template-columns: 42% 1fr 320px;
@@ -179,9 +189,7 @@ body::before {
   min-height: 0;
 }
 
-/* ==========================================================================
-   PANEL IZQUIERDO: DECK & LISTA FLOTANTE
-   ========================================================================== */
+/* Panel Izquierdo */
 .panel-left-stage {
   padding: 22px;
   display: flex;
@@ -222,7 +230,6 @@ body::before {
   min-height: 0;
 }
 
-/* Vinilo Mate Minimalista */
 .vinyl-dock {
   width: 50%;
   height: 100%;
@@ -251,7 +258,6 @@ body::before {
   border: 1px solid rgba(197, 160, 89, 0.12);
 }
 
-/* Ranuras Mate */
 .groove-band {
   position: absolute;
   border-radius: 50%;
@@ -314,7 +320,6 @@ body::before {
   animation: spin 16s linear infinite;
 }
 
-/* Pila Flotante de Tarjetas */
 .tracks-floating-stack {
   position: absolute;
   right: 0;
@@ -369,6 +374,7 @@ body::before {
   border-radius: 8px;
   object-fit: cover;
   border: 1px solid rgba(197, 160, 89, 0.25);
+  flex-shrink: 0;
 }
 
 .card-text {
@@ -395,16 +401,7 @@ body::before {
   margin-top: 2px;
 }
 
-.playing-neon-badge {
-  font-size: 0.62rem;
-  font-weight: 700;
-  color: var(--gold-primary);
-  letter-spacing: 1px;
-}
-
-/* ==========================================================================
-   PANEL CENTRAL: VISUALIZADOR MATE
-   ========================================================================== */
+/* Panel Central */
 .panel-center-visualizer {
   padding: 22px;
   display: flex;
@@ -477,20 +474,13 @@ body::before {
   z-index: 1;
 }
 
-.horizon-glow {
-  display: none;
-}
-
-/* ==========================================================================
-   PANEL DERECHO: NOW PLAYING & EQUALIZER
-   ========================================================================== */
+/* Panel Derecho */
 .panel-right-rack {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-/* Now Playing Module */
 .now-playing-module {
   padding: 16px 18px;
 }
@@ -552,21 +542,18 @@ body::before {
   width: 64px;
   height: 64px;
   flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--gold-border);
 }
 
 .np-artwork-frame img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 10px;
-  border: 1px solid var(--gold-border);
+  display: block;
 }
 
-.gold-frame-glow {
-  display: none;
-}
-
-/* Equalizer Console Module */
 .equalizer-console-module {
   flex: 1;
   padding: 18px;
@@ -594,7 +581,6 @@ body::before {
   font-weight: 600;
 }
 
-/* Faders Rack */
 .faders-rack-container {
   display: flex;
   justify-content: space-around;
@@ -635,7 +621,6 @@ body::before {
   user-select: none;
 }
 .ticks-left { margin-right: 8px; text-align: right; }
-.ticks-right { margin-left: 8px; text-align: left; }
 
 .slider-rail {
   width: 24px;
@@ -645,7 +630,6 @@ body::before {
   justify-content: center;
 }
 
-/* Slider Vertical: Pista mate oscura con thumb dorado satinado */
 .vertical-fader {
   -webkit-appearance: none;
   appearance: none;
@@ -684,60 +668,6 @@ body::before {
   color: var(--text-muted);
 }
 
-/* Amplitude Strip */
-.amplitude-strip {
-  background: rgba(14, 16, 20, 0.5);
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--gold-border);
-  margin-bottom: 14px;
-}
-
-.strip-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: var(--gold-primary);
-  margin-bottom: 6px;
-}
-
-.horizontal-fader-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.horiz-ticks {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.52rem;
-  color: var(--text-muted);
-}
-
-.gold-crimson-h-slider {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 4px;
-  background: var(--bg-matte-elevated);
-  border-radius: 2px;
-  outline: none;
-}
-
-.gold-crimson-h-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 12px;
-  height: 12px;
-  background: var(--gold-primary);
-  border-radius: 50%;
-  cursor: pointer;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-/* Botón Ovalado Mate */
 .btn-oval-reset {
   width: 100%;
   padding: 8px 0;
@@ -764,9 +694,7 @@ body::before {
   color: var(--gold-light);
 }
 
-/* ==========================================================================
-   BARRA DE CONTROL INFERIOR FLOTANTE
-   ========================================================================== */
+/* Barra Inferior Continuous Player */
 .continuous-player-deck {
   position: fixed;
   bottom: 14px;
@@ -828,7 +756,6 @@ body::before {
   color: var(--gold-muted);
 }
 
-/* Barra de Progreso y Minutero */
 .deck-progress-cluster {
   display: flex;
   align-items: center;
@@ -863,7 +790,6 @@ body::before {
   transition: width 0.1s linear;
 }
 
-/* Botones Centrales */
 .deck-main-buttons {
   display: flex;
   align-items: center;
@@ -882,10 +808,6 @@ body::before {
 .btn-deck-gold:hover {
   color: var(--gold-light);
   transform: scale(1.1);
-}
-
-.btn-deck-gold.active {
-  color: var(--gold-primary);
 }
 
 .btn-deck-crimson-master {
@@ -910,7 +832,6 @@ body::before {
   transform: scale(1.06);
 }
 
-/* Volumen */
 .deck-volume-cluster {
   display: flex;
   align-items: center;
