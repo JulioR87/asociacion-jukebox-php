@@ -4,5 +4,17 @@
         "alias": "melomano",
         "email": "usuario@prueba.local",
         "password_hash": "$2y$12$rqMilW63dDF4Q51vAtbZueKRrm1RSnaBwebW9mTkYIlD2r.rjtwVK"
+    },
+    {
+        "id": 2,
+        "alias": "ana",
+        "email": "ana@prueba.local",
+        "password_hash": "$2y$12$48FarZqmuX3cY4E.xtMgleQNelZIuZvqAGpyIRBc7AiT5a\/2IaHNa"
+    },
+    {
+        "id": 3,
+        "alias": "ana",
+        "email": "ana@example.com",
+        "password_hash": "$2y$12$zKUKw679\/7mi0weopnXe7OWeu\/N2oC2T8R1TxHhfwMmStEmL\/j6Oa"
     }
 ]

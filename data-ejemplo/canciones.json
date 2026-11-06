@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "Can't C Me",
+    "artist": "2Pac",
+    "category": "hip-hop",
+    "duration": "04:30",
+    "src": "audio/2Pac - Can't C Me.mp3",
+    "cover": "img/2pac.jpg"
+  },
+  {
+    "id": 2,
+    "title": "Lowrider",
+    "artist": "Cypress Hill",
+    "category": "latin-rap",
+    "duration": "03:41",
+    "src": "audio/Cypress Hill - Lowrider.mp3",
+    "cover": "img/cypressHill.jpg"
+  }
+]
