@@ -26,7 +26,8 @@ try {
         <h1>Catálogo de Canciones</h1>
         <p>Usuario: <strong><?php echo htmlspecialchars($_SESSION['alias'] ?? 'Usuario', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></strong></p>
         <nav>
-            <a href="home.php">Volver al Inicio</a> | 
+            <a href="home.php">Volver al Inicio</a>
+            <a href="canciones-ajax.php">Gestión AJAX</a> | 
             <a href="cancion-nueva.php"><strong>+ Añadir nueva canción</strong></a>
         </nav>
     </header>

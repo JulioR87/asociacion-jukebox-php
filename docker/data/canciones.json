@@ -1,56 +1,63 @@
 [
-  {
-    "id": 1,
-    "title": "Can't C Me",
-    "artist": "2Pac",
-    "category": "hip-hop",
-    "duration": "04:30",
-    "src": "audio/2Pac - Can't C Me.mp3",
-    "cover": "img/2pac.jpg"
-  },
-  {
-    "id": 2,
-    "title": "Viper ft. Eazy E",
-    "artist": "2Pac",
-    "category": "hip-hop",
-    "duration": "03:50",
-    "src": "audio/2Pac - Viper ft.Eazy E.mp3",
-    "cover": "img/2PacC.jpg"
-  },
-  {
-    "id": 3,
-    "title": "Lowrider",
-    "artist": "Cypress Hill",
-    "category": "latin-rap",
-    "duration": "03:41",
-    "src": "audio/Cypress Hill - Lowrider.mp3",
-    "cover": "img/cypressHill.jpg"
-  },
-  {
-    "id": 4,
-    "title": "Feliz Navidad 8",
-    "artist": "Arcángel",
-    "category": "trap",
-    "duration": "05:12",
-    "src": "audio/FelizNavidad8.mp3",
-    "cover": "img/ArcangelFelizNavidad8.jpg"
-  },
-  {
-    "id": 5,
-    "title": "Grillz ft. Paul Wall",
-    "artist": "Nelly",
-    "category": "hip-hop",
-    "duration": "04:30",
-    "src": "audio/Grillz - Nelly Ft.mp3",
-    "cover": "img/NellyGrillz.jpg"
-  },
-  {
-    "id": 6,
-    "title": "We Rollin'",
-    "artist": "Ice Cube & WC ft. Snoop Dogg",
-    "category": "west-coast",
-    "duration": "04:10",
-    "src": "audio/Ice Cube & WC - We Rollin' ft.mp3",
-    "cover": "img/icecubetsnoopdg.jpg"
-  }
+    {
+        "id": 2,
+        "title": "Viper ft. Eazy E",
+        "artist": "2Pac",
+        "category": "hip-hop",
+        "duration": "03:50",
+        "src": "audio\/2Pac - Viper ft.Eazy E.mp3",
+        "cover": "img\/2PacC.jpg"
+    },
+    {
+        "id": 3,
+        "title": "Lowrider",
+        "artist": "Cypress Hill",
+        "category": "latin-rap",
+        "duration": "03:41",
+        "src": "audio\/Cypress Hill - Lowrider.mp3",
+        "cover": "img\/cypressHill.jpg"
+    },
+    {
+        "id": 4,
+        "title": "Feliz Navidad 8",
+        "artist": "Arcángel",
+        "category": "trap",
+        "duration": "05:12",
+        "src": "audio\/FelizNavidad8.mp3",
+        "cover": "img\/ArcangelFelizNavidad8.jpg"
+    },
+    {
+        "id": 5,
+        "title": "Grillz ft. Paul Wall",
+        "artist": "Nelly",
+        "category": "hip-hop",
+        "duration": "04:30",
+        "src": "audio\/Grillz - Nelly Ft.mp3",
+        "cover": "img\/NellyGrillz.jpg"
+    },
+    {
+        "id": 6,
+        "title": "We Rollin'",
+        "artist": "Ice Cube & WC ft. Snoop Dogg",
+        "category": "west-coast",
+        "duration": "04:10",
+        "src": "audio\/Ice Cube & WC - We Rollin' ft.mp3",
+        "cover": "img\/icecubetsnoopdg.jpg"
+    },
+    {
+        "id": 8,
+        "title": "bilbil",
+        "artist": "snoop dog",
+        "category": "Pop",
+        "duration": 500,
+        "src": "audio\/Ice Cube & WC - We Rollin' ft.mp3"
+    },
+    {
+        "id": 9,
+        "title": "Gasolina",
+        "artist": "don omar",
+        "category": "electronica",
+        "duration": 1000,
+        "src": "audio\/demo-01.mp3"
+    }
 ]

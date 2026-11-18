@@ -45,6 +45,7 @@ $aliasUsuario = $_SESSION['alias'] ?? 'Usuario';
             <!-- RELOJ DIGITAL Y ACCIONES PHP -->
             <div class="status-icons-cluster">
                 <a href="canciones.php" class="btn-php-nav"><i class="fa-solid fa-list-check"></i> CATÁLOGO</a>
+                <a href="canciones-ajax.php" class="btn-php-nav"><i class="fa-solid fa-bolt"></i> CATÁLOGO AJAX</a>
                 
                 <form method="post" action="logout.php" style="display: inline; margin: 0;">
                     <input type="hidden" name="csrf" value="<?php echo htmlspecialchars($_SESSION['csrf'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">

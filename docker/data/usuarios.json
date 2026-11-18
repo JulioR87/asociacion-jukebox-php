@@ -16,5 +16,11 @@
         "alias": "ana",
         "email": "ana@example.com",
         "password_hash": "$2y$12$zKUKw679\/7mi0weopnXe7OWeu\/N2oC2T8R1TxHhfwMmStEmL\/j6Oa"
+    },
+    {
+        "id": 4,
+        "alias": "julio",
+        "email": "julio@prueba.local",
+        "password_hash": "$2y$12$LpluwRLktBJKjSjMq9AYQe7A3BokCs\/mJOJp0FV9gFcUTi88IQKtu"
     }
 ]
