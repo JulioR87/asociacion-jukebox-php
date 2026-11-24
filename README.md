@@ -26,3 +26,9 @@ Aplicación web modular en PHP para la gestión de catálogo musical y reproducc
    ```bash
    # En Windows PowerShell:
    Copy-Item .\data-ejemplo\* .\docker\data\
+## Ampliación AJAX y API RESTful (RA2 - Bloques 13 a 20)
+
+- **Nueva pantalla de gestión asíncrona:** `http://localhost:8091/canciones-ajax.php` (requiere sesión iniciada).
+- **Endpoint JSON:** `api/catalogo.php` soporta las acciones `list` (`GET`), `create`, `update` y `delete` (`POST` con cabecera `X-CSRF-Token` y cuerpo `application/json`).
+- **Compatibilidad:** Convive con el reproductor (`home.php` + `api/canciones.php`) y con el CRUD clásico (`canciones.php`), compartiendo el almacén privado `/var/www/data/canciones.json` protegido con bloqueos `flock()`.
+- **Documentación técnica:** Disponible en la carpeta `docs/` (`13` hasta `20-entrega.md`).
